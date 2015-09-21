@@ -4,11 +4,9 @@ PickerChu is an image pick-and-crop library for Android pika.
 
 ##Integration
 
-Import module `PickerChu` into your project and simply add the following line to the `dependencies` section of your `build.gradle` file:
+Simply add the following line to the `dependencies` section of your `build.gradle` file:
 
-    compile project(':PickerChu')
-
-Or check this out: https://jitpack.io/#mlxy/PickerChu
+    compile 'mlxy.pickerchu:PickerChu:1.0'
 
 ##For Eclipse users
 
