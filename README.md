@@ -32,6 +32,8 @@ Although I highly recommend you to migrate your Android projects to Android Stud
                             })
                             .build();
     ```
+    
+    **Note:** You may not need all of those builder methods above, see JavaDoc for more details.
 
 1. Handle `onActivityResult()` event:
 
@@ -54,12 +56,15 @@ Although I highly recommend you to migrate your Android projects to Android Stud
     pickerChu.takePhoto();
     ```
 
+1. Enjoy :)
+
 ##Author
 
-**mlxy**
+**Chihane Habana**
 
 - <http://chihane.in>
 - <chihane@yeah.net>
+- <http://weibo.com/chihaneh>
 
 ##License
 
