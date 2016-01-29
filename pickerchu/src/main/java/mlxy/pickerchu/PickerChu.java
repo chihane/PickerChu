@@ -151,9 +151,7 @@ public class PickerChu {
             config = new Config(activity);
         }
 
-        /** <p>If needs to crop images. </p>
-         *
-         * <p>Does nothing currently. </p> */
+        /** <p>If needs to crop images. </p> */
         public Builder needToCrop(boolean needToCrop) {
             config.needToCrop = needToCrop;
             return this;
@@ -236,7 +234,7 @@ public class PickerChu {
         config = new Config(activity);
     }
 
-    /*=======================↓Setters & Getters↓=======================*/
+    /*=======================Setters & Getters=======================*/
     public void setNeedToCrop(boolean needToCrop) {
         config.needToCrop = needToCrop;
     }
@@ -275,5 +273,5 @@ public class PickerChu {
     public OnImageCroppedListener getOnImageCroppedListener() {
         return config.onImageCroppedListener;
     }
-    /*=======================↑Setters & Getters↑=======================*/
+    /*=======================Setters & Getters=======================*/
 }
