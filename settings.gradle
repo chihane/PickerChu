@@ -1,1 +1,1 @@
-include ':app', ':PickerChu'
+include ':app', ':pickerchu'

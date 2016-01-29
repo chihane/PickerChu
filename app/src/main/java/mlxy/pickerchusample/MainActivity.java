@@ -2,18 +2,22 @@ package mlxy.pickerchusample;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import mlxy.pickerchu.PickerChu;
 
 public class MainActivity extends AppCompatActivity {
-    private android.widget.ImageView imageView;
-    private android.widget.Button buttonCamera;
-    private android.widget.Button buttonGallery;
+    private ImageView imageView;
+    private CheckBox checkboxNeedCrop;
+    private Button buttonCamera;
+    private Button buttonGallery;
+
     private PickerChu pickerChu;
 
     @Override
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.checkboxNeedCrop = (CheckBox) findViewById(R.id.checkboxNeedCrop);
         this.buttonGallery = (Button) findViewById(R.id.buttonGallery);
         this.buttonCamera = (Button) findViewById(R.id.buttonCamera);
         this.imageView = (ImageView) findViewById(R.id.imageView);
@@ -36,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 })
                                 .build();
+
+        checkboxNeedCrop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                pickerChu.setNeedToCrop(isChecked);
+            }
+        });
 
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override

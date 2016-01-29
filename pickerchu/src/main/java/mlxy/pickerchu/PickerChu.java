@@ -9,12 +9,14 @@ import android.provider.MediaStore;
 import java.io.File;
 import java.io.IOException;
 
+import mlxy.utils.F;
+
 /** Pika pika. */
 public class PickerChu {
     private Activity activity;
     private Config config;
     private File tempPhoto;
-    private File croppedImage;
+    private Uri resultImage;
 
     private PickerChu() {}
     private PickerChu(Activity activity) {
@@ -24,7 +26,7 @@ public class PickerChu {
 
     /** Take a photo. */
     public void takePhoto() {
-        tempPhoto = FileUtils.createTempFile(activity, System.currentTimeMillis()+"");
+        tempPhoto = F.createTempFile(activity, System.currentTimeMillis() + "");
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempPhoto));
@@ -45,29 +47,53 @@ public class PickerChu {
         switch (requestCode) {
             case Constants.REQUEST_CODE_TAKE_PHOTO:
                 if (tempPhoto != null) {
-                    crop(Uri.fromFile(tempPhoto));
+                    if (config.needToCrop) {
+                        crop(Uri.fromFile(tempPhoto));
+                    } else {
+                        photoAsResult(tempPhoto);
+                    }
                 }
 
                 break;
 
             case Constants.REQUEST_CODE_PICK_PICTURE:
                 if (data != null && data.getData() != null) {
-                    crop(data.getData());
+                    if (config.needToCrop) {
+                        crop(data.getData());
+                    } else {
+                        pictureAsResult(data.getData());
+                    }
                 }
 
                 break;
 
             case Constants.REQUEST_CODE_CROP:
-                FileUtils.deleteFile(tempPhoto);
-                callListener();
+                deliverResult();
                 break;
         }
+    }
+
+    // Sorry dad we're so ugly and would better go die.
+    private void photoAsResult(File photo) {
+        try {
+            createResultImageFile();
+            F.copy(photo, new File(resultImage.getPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        deliverResult();
+    }
+
+    // Agreed.
+    private void pictureAsResult(Uri uri) {
+        resultImage = uri;
+        deliverResult();
     }
 
     /** Crop image. */
     private void crop(Uri imageUri) {
         try {
-            createCroppedImageFile();
+            createResultImageFile();
 
             Intent intent = prepareCropIntent(imageUri);
             activity.startActivityForResult(intent, Constants.REQUEST_CODE_CROP);
@@ -77,10 +103,11 @@ public class PickerChu {
     }
 
     /** Create file to store cropped image. */
-    private void createCroppedImageFile() throws IOException {
-        croppedImage = new File(config.saveIn, System.currentTimeMillis()+".png");
-        FileUtils.deleteFile(croppedImage);
-        FileUtils.createFile(croppedImage);
+    private void createResultImageFile() throws IOException {
+        File resultImageFile = new File(config.saveIn, System.currentTimeMillis()+".png");
+        F.delete(resultImageFile);
+        F.create(resultImageFile);
+        resultImage = Uri.fromFile(resultImageFile);
     }
 
     /** Setup a intent for cropping. */
@@ -88,7 +115,7 @@ public class PickerChu {
         Intent intent = new Intent("com.android.camera.action.CROP");
 
         intent.setDataAndType(photoUri, "image/*");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(croppedImage));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, resultImage);
         intent.putExtra("crop", "true");
         intent.putExtra("scale", true);
         intent.putExtra("scaleUpIfNeeded", true);
@@ -103,10 +130,16 @@ public class PickerChu {
         return intent;
     }
 
+    /** Delete temp photo and callback. */
+    private void deliverResult() {
+        F.delete(tempPhoto);
+        callListener();
+    }
+
     /** Callback. */
     private void callListener() {
         if (config.onImageCroppedListener != null && config.saveIn != null) {
-            config.onImageCroppedListener.onImageCropped(Uri.fromFile(croppedImage));
+            config.onImageCroppedListener.onImageCropped(resultImage);
         }
     }
 
@@ -186,7 +219,7 @@ public class PickerChu {
         void initByDefault(Activity activity) {
             this.activity = activity;
             needToCrop = true;
-            saveIn = FileUtils.getFileDir(activity);
+            saveIn = F.getFileDir(activity);
             aspectX = 1;
             aspectY = 1;
             outputX = 512;
@@ -203,7 +236,7 @@ public class PickerChu {
         config = new Config(activity);
     }
 
-    /*=======================↓存取器↓=======================*/
+    /*=======================↓Setters & Getters↓=======================*/
     public void setNeedToCrop(boolean needToCrop) {
         config.needToCrop = needToCrop;
     }
@@ -242,5 +275,5 @@ public class PickerChu {
     public OnImageCroppedListener getOnImageCroppedListener() {
         return config.onImageCroppedListener;
     }
-    /*=======================↑存取器↑=======================*/
+    /*=======================↑Setters & Getters↑=======================*/
 }
