@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'mlxy.utils:utils:1.0.7'
+    compile 'com.github.chihane:AndroidUtils:1.0.10'
 }
 
 apply plugin: 'com.github.dcendents.android-maven'
