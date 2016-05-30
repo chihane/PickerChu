@@ -25,11 +25,19 @@ dependencies {
 
 apply plugin: 'com.novoda.bintray-release'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 publish {
     userOrg = 'mlxy'
+    uploadName = 'PickerChu'
     groupId = 'mlxy.pickerchu'
     artifactId = 'pickerchu'
     publishVersion = '1.1.2'
     desc = 'Pika pictcha \'n croppit!'
     website = 'https://github.com/chihane/PickerChu'
+    licences = ['MIT']
+
+    bintrayUser = properties.getProperty('bintray.user')
+    bintrayKey = properties.getProperty('bintray.apikey')
+    dryRun = false
 }
