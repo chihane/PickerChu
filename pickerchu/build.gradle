@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 4
         versionName "1.1.2"
     }
@@ -23,77 +23,13 @@ dependencies {
     compile 'com.github.chihane:AndroidUtils:1.0.10'
 }
 
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.novoda.bintray-release'
 
-version = "1.1.2"
-def siteUrl = 'https://github.com/mlxy/PickerChu'
-def gitUrl = 'https://github.com/mlxy/PickerChu.git'
-
-group = "mlxy.pickerchu"
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'PickerChu'
-                url siteUrl
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'https://raw.githubusercontent.com/mlxy/PickerChu/master/LICENSE'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'mlxy'
-                        name 'Chihane Habana'
-                        email 'chihane@yeah.net'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "PickerChu"
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["MIT"]
-        publish = true
-    }
+publish {
+    userOrg = 'mlxy'
+    groupId = 'mlxy.pickerchu'
+    artifactId = 'pickerchu'
+    publishVersion = '1.1.2'
+    desc = 'Pika pictcha \'n croppit!'
+    website = 'https://github.com/chihane/PickerChu'
 }
